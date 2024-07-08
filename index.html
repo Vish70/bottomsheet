@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link
+            href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
+            rel="stylesheet" />
+        <link rel="stylesheet" href="style.css">
+        <title>bottom sheet page</title>
+        <meta name="theme-color" content="#3b5aa1">
+        <meta name="msapplication-navbutton-color" content="#3b5aa1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="#3b5aa1">
+    </head>
+    <body>
+
+        <div class="container_main">
+            <div class="fixed_nav">
+                <nav></nav>
+
+                <div class="arrow_i">
+                    <div class="icons">
+                        <a href="#"><i class="ri-arrow-left-line"></i></a>
+                        <h1> My wallet </h1>
+                        <a href="#"><i class="ri-question-answer-line"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <section>
+                <div class="para">
+
+                    <button class="show-modal">Click</button>
+
+                    <div class="bottom-sheet">
+                        <div class="sheet-overlay"></div>
+                        <div class="content">
+                            <div class="header">
+                                <div class="drag-icon"><span></span></div>
+                            </div>
+                            <div class="pay-amout-sec">
+                                <h>Paying Amount</h>
+                                <div class="deatil-pay">
+
+                                    <span><h2>5,00,000 /- </h2></span>
+                                    <a href="#"
+                                        class="button"><button>Proceed</button></a>
+                                    <p>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae exercitationem dignissimos esse iure eveniet id quod error sunt sint in.
+                                    </p>
+                                    <p>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae exercitationem dignissimos esse iure eveniet id quod error sunt sint in.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- <button class="show-modal">Show Bottom Sheet</button> -->
+
+        </div>
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <script>
+// Select DOM elements
+const showModalBtn = document.querySelector(".show-modal");
+const bottomSheet = document.querySelector(".bottom-sheet");
+const sheetOverlay = bottomSheet.querySelector(".sheet-overlay");
+const sheetContent = bottomSheet.querySelector(".content");
+const dragIcon = bottomSheet.querySelector(".drag-icon");
+
+// Global variables for tracking drag events
+let isDragging = false, startY, startHeight;
+
+// Show the bottom sheet, hide body vertical scrollbar, and call updateSheetHeight
+const showBottomSheet = () => {
+    bottomSheet.classList.add("show");
+    document.body.style.overflowY = "hidden";
+    updateSheetHeight(50);
+}
+
+const updateSheetHeight = (height) => {
+    sheetContent.style.height = `${height}vh`; //updates the height of the sheet content
+    // Toggles the fullscreen class to bottomSheet if the height is equal to 100
+    bottomSheet.classList.toggle("fullscreen", height === 100);
+}
+
+// Hide the bottom sheet and show body vertical scrollbar
+const hideBottomSheet = () => {
+    bottomSheet.classList.remove("show");
+    document.body.style.overflowY = "auto";
+}
+
+// Sets initial drag position, sheetContent height and add dragging class to the bottom sheet
+const dragStart = (e) => {
+    isDragging = true;
+    startY = e.pageY || e.touches?.[0].pageY;
+    startHeight = parseInt(sheetContent.style.height);
+    bottomSheet.classList.add("dragging");
+}
+
+// Calculates the new height for the sheet content and call the updateSheetHeight function
+const dragging = (e) => {
+    if(!isDragging) return;
+    const delta = startY - (e.pageY || e.touches?.[0].pageY);
+    const newHeight = startHeight + delta / window.innerHeight * 100;
+    updateSheetHeight(newHeight);
+}
+
+// Determines whether to hide, set to fullscreen, or set to default 
+// height based on the current height of the sheet content
+const dragStop = () => {
+    isDragging = false;
+    bottomSheet.classList.remove("dragging");
+    const sheetHeight = parseInt(sheetContent.style.height);
+    sheetHeight < 20 ? hideBottomSheet() : sheetHeight > 75 ? updateSheetHeight(100) : updateSheetHeight(50);
+}
+
+
+dragIcon.addEventListener("mousedown", dragStart);
+document.addEventListener("mousemove", dragging);
+document.addEventListener("mouseup", dragStop);
+
+dragIcon.addEventListener("touchstart", dragStart);
+document.addEventListener("touchmove", dragging);
+document.addEventListener("touchend", dragStop);
+
+sheetOverlay.addEventListener("click", hideBottomSheet);
+showModalBtn.addEventListener("click", showBottomSheet);
+        
+</script>
+
+    </body>
+</html>
